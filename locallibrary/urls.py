@@ -15,14 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-]
-
-# Use include() to add paths from the catalog application 
+from django.conf.urls import url
 from django.conf.urls import include
 from django.urls import path
+
+urlpatterns = [
+    url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
+    #url(r'^jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
+    path('admin/', admin.site.urls),
+]
 
 urlpatterns += [
     path('catalog/', include('catalog.urls')),
@@ -34,3 +35,4 @@ from django.views.generic import RedirectView
 urlpatterns += [
     path('', RedirectView.as_view(url='/catalog/')),
 ]
+

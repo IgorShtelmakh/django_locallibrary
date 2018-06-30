@@ -2,6 +2,14 @@ from django.shortcuts import render
 from .models import Book, Author, BookInstance, Genre
 from django.views import generic
 
+
+from django.contrib.auth.decorators import permission_required
+
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+import datetime
+
 # Create your views here.
 def index(request):
     """
@@ -27,12 +35,25 @@ def index(request):
     )
 
 
+class AuthorListView(generic.ListView):
+    model = Author
+    paginate_by = 10
+
+class AuthorDetailView(generic.DetailView):
+    model = Author
+
+
 class BookListView(generic.ListView):
     model = Book
     paginate_by = 10
 
 class BookDetailView(generic.DetailView):
     model = Book    
+
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+class AuthorDetailView(UpdateView):
+    model = Author
+    fields = ['first_name','last_name','date_of_birth','date_of_death']
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -63,12 +84,7 @@ class LoanedBooksAllListView(PermissionRequiredMixin,generic.ListView):
         return BookInstance.objects.filter(status__exact='o').order_by('due_back')
 
 
-from django.contrib.auth.decorators import permission_required
 
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-import datetime
 
 from .forms import RenewBookForm
 
